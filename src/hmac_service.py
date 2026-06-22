@@ -1,37 +1,50 @@
 """Module with HMAC sign functions"""
 
-
+import hashlib
+import hmac
 
 
 class HMACSigner:
     """Class for HMAC sign and verify signature"""
 
-    # TODO: реализуйте функцию подписи
+    def __init__(self, secret: bytes):
+        """
+        Инициализация с секретным ключом.
+
+        :param secret: Секретный ключ в байтах.
+        """
+        self._secret = secret
+
     def sign(self, msg: str) -> bytes:
         """
-        Sign message with HMAC algorithm.
+        Подписать сообщение алгоритмом HMAC-SHA256.
 
-        :param msg: Message for sign.
-        :return: Signature bytes.
+        :param msg: Сообщение для подписи.
+        :return: Подпись в байтах.
         """
-        pass
+        msg_bytes = msg.encode("utf-8")
+        return hmac.new(self._secret, msg_bytes, hashlib.sha256).digest()
 
-    # TODO: реализуйте функцию проверки
     def verify(self, msg: str, signature: bytes) -> bool:
         """
-        Verify message signature with HMAC algorithm.
+        Проверить подпись сообщения.
 
-        :param msg: Message for verify.
-        :param signature: Signature for verify.
-        :return: True if signature for message valid, else False.
+        :param msg: Сообщение для проверки.
+        :param signature: Подпись в байтах.
+        :return: True если подпись верна, иначе False.
         """
-        pass
+        expected = self.sign(msg)
+        return hmac.compare_digest(expected, signature)
 
 
 def hmac_service() -> HMACSigner:
     """
-    Fabric for signer.
+    Фабрика для создания HMACSigner.
 
-    :return: Initialized HMACSigner object.
+    :return: Инициализированный HMACSigner.
     """
-    return HMACSigner()
+    from src.config import get_secret_bytes, load_config
+
+    config = load_config()
+    secret = get_secret_bytes(config)
+    return HMACSigner(secret)
