@@ -76,6 +76,10 @@ async def verify(
 
     try:
         sig_bytes = decode_base64url(request.signature)
+        if len(sig_bytes) != 32:
+            raise HTTPException(
+                status_code=400, detail="invalid_signature_format"
+            )
     except ValueError:
         raise HTTPException(status_code=400, detail="invalid_signature_format")
 
