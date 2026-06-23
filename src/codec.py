@@ -1,6 +1,6 @@
-"""Module with codec functions"""
-
 import base64
+
+from src.constants import BASE64_PADDING
 
 
 def encode_base64url(data: bytes) -> str:
@@ -14,8 +14,8 @@ def decode_base64url(data: str) -> bytes:
     Raises:
         ValueError: если строка невалидна.
     """
-    padding = 4 - len(data) % 4
-    if padding != 4:
+    padding = BASE64_PADDING - len(data) % BASE64_PADDING
+    if padding != BASE64_PADDING:
         data += "=" * padding
     try:
         return base64.urlsafe_b64decode(data)

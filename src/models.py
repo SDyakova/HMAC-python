@@ -1,22 +1,23 @@
-"""Module with models"""
-
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
 class SignRequest:
-    """Model for /sign request"""
+    """Модель запроса для подписи сообщения."""
+
     msg: str
 
 
 @dataclass(frozen=True)
 class VerifyRequest:
-    """Model for /verify request"""
+    """Модель запроса для проверки подписи."""
+
     msg: str
     signature: str
 
 
 @dataclass(frozen=True)
 class VerifyResponse:
-    """Model for /verify response"""
+    """Модель ответа с результатом проверки."""
+
     ok: bool

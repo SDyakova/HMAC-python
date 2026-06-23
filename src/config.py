@@ -1,9 +1,9 @@
-"""Module with config utils"""
-
 import json
 import logging
 from base64 import b64decode
 from pathlib import Path
+
+from src.constants import MIN_SECRET_LENGTH
 
 CONFIG_PATH = Path(__file__).resolve().parent.parent / "config.json"
 
@@ -13,8 +13,7 @@ class ConfigError(Exception):
 
 
 def load_config():
-    """
-    Загружает и валидирует config.json.
+    """Загружает и валидирует config.json.
 
     :return: Словарь с конфигурацией.
     :raises ConfigError: Если файл не найден или поля некорректны.
@@ -40,8 +39,7 @@ def load_config():
 
 
 def get_secret_bytes(config):
-    """
-    Извлекает секрет из конфига и декодирует из base64 в байты.
+    """Извлекает секрет из конфига и декодирует из base64 в байты.
 
     :param config: Словарь конфигурации.
     :return: Секретный ключ в байтах.
@@ -52,15 +50,16 @@ def get_secret_bytes(config):
     except Exception as e:
         raise ConfigError(f"Некорректный secret (base64): {e}")
 
-    if len(secret_bytes) < 16:
-        raise ConfigError("Секрет должен быть длиной минимум 16 байт.")
+    if len(secret_bytes) < MIN_SECRET_LENGTH:
+        raise ConfigError(
+            f"Секрет должен быть длиной минимум {MIN_SECRET_LENGTH} байт."
+        )
 
     return secret_bytes
 
 
 def get_listen_address(config):
-    """
-    Извлекает хост и порт из конфига.
+    """Извлекает хост и порт из конфига.
 
     :param config: Словарь конфигурации.
     :return: Кортеж (host, port).
@@ -71,8 +70,7 @@ def get_listen_address(config):
 
 
 def get_log_level(config):
-    """
-    Извлекает уровень логирования из конфига.
+    """Извлекает уровень логирования из конфига.
 
     :param config: Словарь конфигурации.
     :return: Уровень логирования (logging.INFO и т.д.).
